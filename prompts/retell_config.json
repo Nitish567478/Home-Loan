@@ -1,0 +1,25 @@
+{
+  "agent_name": "Home Credit LAP Qualifier",
+  "voice_id": "11labs-Adrian",
+  "llm_model": "gpt-4o",
+  "ambient_sound": "office",
+  "responsiveness": 0.9,
+  "interruption_sensitivity": 0.8,
+  "enable_backchannel": true,
+  "backchannel_words": ["I understand", "Got it", "Sure", "Right"],
+  "language": "en-US",
+  "variables": {
+    "company_name": "Home Credit India",
+    "customer_name": "{{customer_name}}",
+    "agent_name": "Aisha",
+    "agent_gender": "Female",
+    "current_date": "{{current_date}}",
+    "current_day": "{{current_day}}",
+    "current_time": "{{current_time}}",
+    "conversation_history": "{{conversation_history}}",
+    "customer_utterance": "{{customer_utterance}}",
+    "additional_context_from_rag": "The pre-approved Loan Against Property offer is up to ₹75,00,000. The specification does not state a minimum property value, processing fee, or processing timeline. Exact interest rates are provided by a senior loan expert.",
+    "language_to_speak": "English"
+  },
+  "general_prompt_path": "./system_prompt_master.md"
+}

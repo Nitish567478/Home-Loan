@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Credit | LAP AI Voice Agent Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=20261010-v3">
+  <style>
+    .quick-chips-bar {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+      padding: 8px 12px 10px !important;
+      background: #ffffff !important;
+      border-top: 1px solid #e3e8eb !important;
+      flex-shrink: 0 !important;
+    }
+    .quick-chips-header {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 0.72rem !important;
+      font-weight: 700 !important;
+      color: #3b4e58 !important;
+    }
+    .chips-bolt {
+      color: #c8102e !important;
+      font-size: 0.8rem !important;
+    }
+    .chips-scroll {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      gap: 6px !important;
+      padding: 2px 2px 6px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: #cbd5d9 transparent !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    .chips-scroll::-webkit-scrollbar {
+      height: 4px !important;
+    }
+    .chips-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5d9 !important;
+      border-radius: 999px !important;
+    }
+    .suggestion-chip {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      flex-shrink: 0 !important;
+      min-height: 28px !important;
+      height: 28px !important;
+      padding: 0 10px !important;
+      background: #f8fafb !important;
+      border: 1px solid #d7e0e4 !important;
+      border-radius: 999px !important;
+      color: #2c3e47 !important;
+      font-family: inherit !important;
+      font-size: 0.72rem !important;
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+      cursor: pointer !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+      transition: all 0.15s ease !important;
+    }
+    .suggestion-chip:hover {
+      background: #fff5f5 !important;
+      border-color: #e5999e !important;
+      color: #b31422 !important;
+      transform: translateY(-1px) !important;
+    }
+    .suggestion-chip.chip-danger {
+      background: #fff5f5 !important;
+      border-color: #f7c5c8 !important;
+      color: #a7232e !important;
+    }
+    .suggestion-chip.chip-warning {
+      background: #fffdf5 !important;
+      border-color: #fde68a !important;
+      color: #92400e !important;
+    }
+    .suggestion-chip.chip-info {
+      background: #f7faff !important;
+      border-color: #bfdbfe !important;
+      color: #1e40af !important;
+    }
+    .chip-icon {
+      font-size: 0.78rem !important;
+      line-height: 1 !important;
+    }
+    .header-language-control {
+      display: flex !important;
+      align-items: center !important;
+    }
+    .language-picker {
+      display: inline-flex !important;
+      align-items: center !important;
+      position: relative !important;
+      margin: 0 !important;
+    }
+    #conversation-language-select {
+      height: 36px !important;
+      min-width: 96px !important;
+      padding: 0 28px 0 12px !important;
+      background-color: #f5f7f8 !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23556670' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 10px center !important;
+      border: 1px solid #d7dfe2 !important;
+      border-radius: 7px !important;
+      color: #2c3e47 !important;
+      font-family: inherit !important;
+      font-size: 0.78rem !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      transition: all 0.15s ease !important;
+    }
+    #conversation-language-select:hover {
+      background-color: #edf1f2 !important;
+      border-color: #cbd5d9 !important;
+      color: #1c2930 !important;
+    }
+    #conversation-language-select:focus,
+    #conversation-language-select:focus-visible {
+      outline: none !important;
+      border-color: #bd2935 !important;
+      box-shadow: 0 0 0 3px rgba(189, 41, 53, 0.12) !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="name-gate-overlay" id="name-gate-overlay">
+    <script>
+      try {
+        if (localStorage.getItem('home-credit-customer-name')) {
+          document.getElementById('name-gate-overlay').style.display = 'none';
+        }
+      } catch (e) {}
+    </script>
+    <section class="name-gate-dialog" role="dialog" aria-modal="true" aria-labelledby="name-gate-title">
+      <div class="name-gate-brand">HOME CREDIT · LAP</div>
+      <h1 id="name-gate-title">Enter your name</h1>
+      <p>Aisha will call you by this name.</p>
+      <form id="customer-name-form" novalidate>
+        <label for="customer-name-input">Name</label>
+        <input id="customer-name-input" name="customerName" type="text" autocomplete="name" maxlength="80" placeholder="Enter your name" autofocus required>
+        <p class="name-gate-error" id="customer-name-error" role="alert" hidden>Please enter your name.</p>
+        <button id="customer-name-submit" type="submit">Continue</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="studio-wrapper">
+    
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-badge">
+          <div class="brand-logo-icon">HC</div>
+          <div class="brand-titles">
+            <div class="brand-main">Home Credit <span class="brand-gradient">AI Voice Agent</span></div>
+            <div class="brand-tag">Loan Against Property (LAP) • 7-Point Qualification Studio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <div class="status-indicator-pill" id="global-call-status-pill">
+          <span class="live-dot" id="call-live-dot"></span>
+          <span class="status-label" id="global-status-text">STANDBY</span>
+          <span class="status-divider">•</span>
+          <span class="status-detail" id="global-checklist-count">0/7 Criteria Captured</span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div class="header-language-control">
+          <label class="language-picker" for="conversation-language-select">
+            <select id="conversation-language-select">
+              <option value="Hindi" selected>हिन्दी</option>
+              <option value="English">English</option>
+            </select>
+          </label>
+        </div>
+        <button id="quick-reset-btn" class="nav-action-btn" title="Reset Session">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          Reset
+        </button>
+      </div>
+    </header>
+
+    
+    <main class="studio-main-grid">
+      
+      <section class="telephony-column">
+        <div class="telephony-card">
+          
+          <div class="call-top-bar">
+            <div class="caller-profile">
+              <div class="avatar-container">
+                <div class="avatar-ring-outer" id="avatar-pulse-ring"></div>
+                <div class="avatar-circle">
+                  <span id="agent-initials-display">P</span>
+                </div>
+              </div>
+              <div class="caller-info">
+                <div class="agent-display-name" id="agent-display-name">Aisha (AI Voice Agent)</div>
+                <div class="customer-target-name" id="customer-target-display">Calling: <strong>Rahul Sharma</strong> • LAP Offer (₹75L)</div>
+              </div>
+            </div>
+            <div class="call-clock" id="call-clock-display">00:00</div>
+          </div>
+
+          
+          <div class="voice-wave-section">
+            <div class="wave-visualizer" id="wave-visualizer">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+            <div class="voice-status-label" id="voice-status-label">Voice Agent Standby</div>
+          </div>
+
+          
+          <div class="dialogue-feed-container">
+            <div class="feed-header">
+              <span class="feed-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Live Dialogue & Audio Transcript
+              </span>
+              <button id="clear-feed-btn" class="feed-clear-btn">Clear Log</button>
+            </div>
+            
+            <div class="dialogue-messages-scroll" id="dialogue-messages-scroll">
+              <div class="dialogue-bubble system">
+                <div class="bubble-content">
+                  <p>Ready to begin. Click <strong>"Start Call"</strong> when you're ready.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="quick-chips-bar" id="quick-chips-bar">
+            <div class="quick-chips-header">
+              <span class="chips-label">Quick replies</span>
+            </div>
+            <div class="chips-scroll" id="chips-scroll">
+              <button class="suggestion-chip" data-text-en="Yes, speaking." data-text-hi="जी, बताइए।" data-label-en="Yes, speaking" data-label-hi="जी, बताइए">
+                <span class="chip-text">Yes, speaking</span>
+              </button>
+              <button class="suggestion-chip" data-text-en="It is a residential apartment solely in my name." data-text-hi="यह आवासीय फ्लैट मेरे नाम पर है।" data-label-en="Residential, sole owner" data-label-hi="आवासीय, अकेला मालिक">
+                <span class="chip-text">Residential, sole owner</span>
+              </button>
+              <button class="suggestion-chip" data-text-en="Yes, I have original property papers available." data-text-hi="हाँ, संपत्ति के मूल दस्तावेज़ उपलब्ध हैं।" data-label-en="Original papers ready" data-label-hi="मूल दस्तावेज़ उपलब्ध">
+                <span class="chip-text">Original papers ready</span>
+              </button>
+              <button class="suggestion-chip" data-text-en="I am looking for a loan of 50 lakhs." data-text-hi="मुझे 50 लाख रुपये का ऋण चाहिए।" data-label-en="Need ₹50 Lakhs" data-label-hi="₹50 लाख चाहिए">
+                <span class="chip-text">Need ₹50 Lakhs</span>
+              </button>
+              <button class="suggestion-chip" data-text-en="I am salaried and my salary is credited to my bank account." data-text-hi="मेरी नौकरी है और वेतन मेरे बैंक खाते में आता है।" data-label-en="Salaried, bank income" data-label-hi="नौकरी, बैंक में आय">
+                <span class="chip-text">Salaried, bank income</span>
+              </button>
+              <button class="suggestion-chip" data-text-en="The market value is around 1.2 crore and I want a 10-year tenure." data-text-hi="बाज़ार मूल्य लगभग 1.2 करोड़ है और मुझे 10 साल की अवधि चाहिए।" data-label-en="₹1.2 Cr value, 10 yrs" data-label-hi="₹1.2 करोड़, 10 साल">
+                <span class="chip-text">₹1.2 Cr value, 10 yrs</span>
+              </button>
+              <button class="suggestion-chip chip-danger" data-text-en="It is agricultural farmland." data-text-hi="यह कृषि भूमि है।" data-label-en="Agricultural land" data-label-hi="कृषि भूमि">
+                <span class="chip-text">Agricultural land</span>
+              </button>
+              <button class="suggestion-chip chip-warning" data-text-en="I already have an existing loan on this property." data-text-hi="इस संपत्ति पर मेरा पहले से ऋण है।" data-label-en="Existing loan" data-label-hi="पहले से ऋण">
+                <span class="chip-text">Existing loan</span>
+              </button>
+              <button class="suggestion-chip chip-info" data-text-en="I am in a meeting. Please call me tomorrow at 3 pm." data-text-hi="मैं मीटिंग में हूँ। कृपया कल दोपहर 3 बजे फ़ोन करें।" data-label-en="Busy, call back" data-label-hi="व्यस्त, बाद में फ़ोन करें">
+                <span class="chip-text">Busy, call back</span>
+              </button>
+            </div>
+          </div>
+
+          
+          <div class="telephony-control-deck">
+            <div class="action-buttons-row">
+              <button id="btn-start-call" class="action-btn call-start">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <span>Start Call</span>
+              </button>
+
+              <button id="btn-mic-toggle" class="action-btn mic-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                <span id="mic-btn-text">Microphone (STT)</span>
+              </button>
+
+              <button id="btn-end-call" class="action-btn call-end" disabled>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+                <span>End Call</span>
+              </button>
+            </div>
+
+            <form id="chat-input-form" class="chat-input-form">
+              <input type="text" id="chat-input-field" placeholder="Speak into mic or type customer response..." autocomplete="off">
+              <button type="submit" id="btn-send-message" class="send-button" disabled title="Send Response">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="operations-column">
+        
+        <div class="ops-nav-tabs">
+          <button class="ops-tab-btn active" data-tab="tab-matrix">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            7-Point Qualification Matrix
+          </button>
+        </div>
+
+        
+        <div id="tab-matrix" class="ops-tab-pane active">
+          
+          <div class="decision-hero-card state-neutral" id="decision-hero-card">
+            <div class="decision-badge-icon" id="decision-hero-icon">⚡</div>
+            <div class="decision-hero-content">
+              <div class="decision-hero-title" id="decision-hero-title">Awaiting Outbound Call</div>
+              <div class="decision-hero-desc" id="decision-hero-desc">The Voice Agent will conduct a polite 7-point qualification check and extract out-of-order details.</div>
+            </div>
+          </div>
+
+          
+          <div class="matrix-cards-grid">
+            
+            <div class="matrix-card status-pending" id="card-property_type">
+              <div class="mcard-header">
+                <div class="mcard-idx">01</div>
+                <div class="mcard-title">Property Type</div>
+                <div class="mcard-badge badge-pending" id="badge-property_type">PENDING</div>
+              </div>
+              <div class="mcard-rule">Eligible: Residential / Commercial / Industrial • Agricultural: Disqualify</div>
+              <div class="mcard-value" id="val-property_type">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending" id="card-ownership_status">
+              <div class="mcard-header">
+                <div class="mcard-idx">02</div>
+                <div class="mcard-title">Ownership Status</div>
+                <div class="mcard-badge badge-pending" id="badge-ownership_status">PENDING</div>
+              </div>
+              <div class="mcard-rule">Eligible: Sole & Joint Ownership are both fully eligible</div>
+              <div class="mcard-value" id="val-ownership_status">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending" id="card-documents_available">
+              <div class="mcard-header">
+                <div class="mcard-idx">03</div>
+                <div class="mcard-title">Original Documents</div>
+                <div class="mcard-badge badge-pending" id="badge-documents_available">PENDING</div>
+              </div>
+              <div class="mcard-rule">Eligible: Original title deeds available • Photocopies/Missing: Disqualify</div>
+              <div class="mcard-value" id="val-documents_available">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending" id="card-loan_amount">
+              <div class="mcard-header">
+                <div class="mcard-idx">04</div>
+                <div class="mcard-title">Loan Amount</div>
+                <div class="mcard-badge badge-pending" id="badge-loan_amount">PENDING</div>
+              </div>
+              <div class="mcard-rule">Limit: Up to ₹75 Lakhs • > ₹75L triggers negotiation to ₹75L cap</div>
+              <div class="mcard-value" id="val-loan_amount">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending" id="card-occupation_and_income">
+              <div class="mcard-header">
+                <div class="mcard-idx">05</div>
+                <div class="mcard-title">Occupation & Income</div>
+                <div class="mcard-badge badge-pending" id="badge-occupation_and_income">PENDING</div>
+              </div>
+              <div class="mcard-rule">Eligible: Salaried / Self-Employed in Bank • Cash: Disqualify</div>
+              <div class="mcard-value" id="val-occupation_and_income">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending" id="card-market_value">
+              <div class="mcard-header">
+                <div class="mcard-idx">06</div>
+                <div class="mcard-title">Estimated Market Value</div>
+                <div class="mcard-badge badge-pending" id="badge-market_value">PENDING</div>
+              </div>
+              <div class="mcard-rule">Record customer estimate (No arbitrary minimum enforced)</div>
+              <div class="mcard-value" id="val-market_value">—</div>
+            </div>
+
+            
+            <div class="matrix-card status-pending span-full" id="card-tenure">
+              <div class="mcard-header">
+                <div class="mcard-idx">07</div>
+                <div class="mcard-title">Repayment Tenure</div>
+                <div class="mcard-badge badge-pending" id="badge-tenure">PENDING</div>
+              </div>
+              <div class="mcard-rule">Eligible: 3 to 15 Years (36–180 months) • Outside range: Disqualify</div>
+              <div class="mcard-value" id="val-tenure">—</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div id="tab-scenarios" class="ops-tab-pane">
+          <div class="suite-header-bar">
+            <div>
+              <h3 class="suite-title">Automated 14-Scenario Evaluation Matrix</h3>
+              <p class="suite-subtitle">Validate system prompt logic against happy paths, immediate disqualifications, transfer branches, and edge cases.</p>
+            </div>
+            <button id="btn-run-all-scenarios" class="suite-run-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Run All 14 Test Scenarios
+            </button>
+          </div>
+
+          <div class="scenarios-list-wrap" id="scenarios-list-container">
+            <div class="loading-scenarios">Loading evaluation matrix...</div>
+          </div>
+        </div>
+
+        
+        <div id="tab-studio" class="ops-tab-pane">
+          <div class="studio-two-col">
+            <div class="studio-settings-card">
+              <h3 class="studio-sec-title">Runtime Template Variables</h3>
+              <p class="studio-sec-sub">Dynamically customize parameters to test multilingual or custom loan scenarios.</p>
+
+              <form id="studio-config-form" class="studio-form-grid">
+                <div class="form-field">
+                  <label>Company Name</label>
+                  <input type="text" id="studio-cfg-company" value="Home Credit India">
+                </div>
+
+                <div class="form-field">
+                  <label>Target Customer Name</label>
+                  <input type="text" id="studio-cfg-customer" value="Rahul Sharma">
+                </div>
+
+                <div class="form-field">
+                  <label>Agent Persona Name</label>
+                  <input type="text" id="studio-cfg-agent-name" value="Aisha">
+                </div>
+
+                <div class="form-field">
+                  <label>Agent Gender</label>
+                  <select id="studio-cfg-agent-gender">
+                    <option value="Female" selected>Female</option>
+                    <option value="Male">Male</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label>Language</label>
+                  <select id="studio-cfg-language">
+                    <option value="English">English</option>
+                    <option value="Hindi" selected>Hindi</option>
+                  </select>
+                </div>
+
+                <div class="form-field span-2">
+                  <label>RAG Context (Product FAQ Knowledge)</label>
+                  <textarea id="studio-cfg-rag" rows="3">The pre-approved Loan Against Property offer is up to ₹75,00,000. The specification does not state a minimum property value, processing fee, or processing timeline. Exact interest rates are provided by a senior loan expert.</textarea>
+                </div>
+
+                <div class="form-field span-2">
+                  <button type="submit" class="studio-apply-btn">Apply & Re-render System Prompt</button>
+                </div>
+              </form>
+
+              
+              <div class="studio-export-box">
+                <div class="export-box-title">Export for Voice Platforms</div>
+                <div class="export-btns-row">
+                  <button id="btn-export-retell" class="export-btn">Copy Retell AI Config</button>
+                  <button id="btn-export-bolna" class="export-btn">Copy Bolna Config</button>
+                  <button id="btn-export-prompt" class="export-btn">Copy System Prompt</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="studio-preview-card">
+              <div class="preview-card-header">
+                <span>Rendered System Prompt Preview</span>
+                <span class="preview-tag">Jinja Rendered</span>
+              </div>
+              <pre class="prompt-code-display" id="studio-prompt-preview">Loading rendered system prompt...</pre>
+            </div>
+          </div>
+        </div>
+
+        
+        <div id="tab-telemetry" class="ops-tab-pane">
+          <div class="telemetry-header-bar">
+            <div>
+              <h3 class="suite-title">Session State Telemetry & Diagnostics</h3>
+              <p class="suite-subtitle">Inspect structured JSON state machines, conversational entities, and handoff payloads.</p>
+            </div>
+            <div class="telemetry-actions">
+              <button id="btn-telemetry-json" class="export-btn">Download JSON Log</button>
+              <button id="btn-telemetry-txt" class="export-btn">Download Transcript TXT</button>
+            </div>
+          </div>
+
+          <div class="telemetry-viewer-box">
+            <pre class="json-code-display" id="studio-telemetry-json">No call records yet. Initiate a call or test scenario to view live JSON telemetry.</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js?v=persist-name-v2"></script>
+</body>
+</html>

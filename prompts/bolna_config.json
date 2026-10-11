@@ -1,0 +1,30 @@
+{
+  "agent_config": {
+    "agent_name": "Home Credit LAP Qualifier",
+    "agent_type": "sales_qualification",
+    "tasks": [
+      {
+        "task_type": "conversation",
+        "tools_config": {
+          "llm_agent": {
+            "agent_type": "simple_llm_agent",
+            "agent_flow_type": "streaming",
+            "provider": "openai",
+            "model": "gpt-4o"
+          },
+          "synthesizer": {
+            "provider": "elevenlabs",
+            "voice": "Rachel",
+            "language": "en"
+          },
+          "transcriber": {
+            "provider": "deepgram",
+            "model": "nova-2",
+            "language": "en"
+          }
+        },
+        "system_prompt": "Refer to system_prompt_master.md"
+      }
+    ]
+  }
+}
