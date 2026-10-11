@@ -26,8 +26,14 @@ app.add_middleware(
 
 voice_agent = VoiceAgent()
 
+class SessionStartRequest(BaseModel):
+    customer_name: Optional[str] = None
+    language_to_speak: Optional[str] = None
+
 class ChatRequest(BaseModel):
     message: str
+    customer_name: Optional[str] = None
+    language_to_speak: Optional[str] = None
 
 class ConfigUpdateRequest(BaseModel):
     company_name: Optional[str] = None
@@ -42,8 +48,12 @@ async def health_check():
     return {"status": "online", "service": "Home Credit LAP Voice Agent"}
 
 @app.post("/api/session/start")
-async def start_session():
+async def start_session(req: Optional[SessionStartRequest] = None):
     voice_agent.reset_session()
+    if req:
+        updates = {k: v for k, v in req.model_dump().items() if v is not None}
+        if updates:
+            voice_agent.update_config(updates)
     result = voice_agent.process_customer_turn("")
     return result
 
@@ -54,6 +64,13 @@ async def reset_session():
 
 @app.post("/api/chat")
 async def chat_turn(req: ChatRequest):
+    updates = {}
+    if req.customer_name:
+        updates["customer_name"] = req.customer_name
+    if req.language_to_speak:
+        updates["language_to_speak"] = req.language_to_speak
+    if updates:
+        voice_agent.update_config(updates)
     result = voice_agent.process_customer_turn(req.message)
     return result
 
@@ -94,3 +111,11 @@ if FRONTEND_DIR.exists():
     @app.get("/")
     async def serve_index():
         return FileResponse(FRONTEND_DIR / "index.html")
+
+    @app.get("/style.css")
+    async def serve_css():
+        return FileResponse(FRONTEND_DIR / "style.css")
+
+    @app.get("/app.js")
+    async def serve_js():
+        return FileResponse(FRONTEND_DIR / "app.js")

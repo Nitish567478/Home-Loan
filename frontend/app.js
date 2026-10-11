@@ -84,7 +84,7 @@ class VoiceAgentStudio {
       const studioCustomerInput = document.getElementById('studio-cfg-customer');
       if (studioCustomerInput) studioCustomerInput.value = trimmedName;
       if (this.customerTargetDisplay) {
-        this.customerTargetDisplay.textContent = `Calling: ${trimmedName} • LAP Offer (₹75L)`;
+        this.customerTargetDisplay.innerHTML = `Calling: <strong>${trimmedName}</strong> • LAP Offer (₹75L)`;
       }
       fetch('/api/config', {
         method: 'POST',
@@ -247,6 +247,15 @@ class VoiceAgentStudio {
     }
   }
 
+  getCustomerName() {
+    const fromStorage = window.localStorage.getItem('home-credit-customer-name');
+    if (fromStorage && fromStorage.trim()) return fromStorage.trim();
+    if (this.customerNameInput && this.customerNameInput.value.trim()) return this.customerNameInput.value.trim();
+    const studioInput = document.getElementById('studio-cfg-customer');
+    if (studioInput && studioInput.value.trim()) return studioInput.value.trim();
+    return '';
+  }
+
   async startCall() {
     try {
       await this.saveConversationLanguage();
@@ -282,7 +291,15 @@ class VoiceAgentStudio {
     }, 1000);
 
     try {
-      const res = await fetch('/api/session/start', { method: 'POST' });
+      const customerName = this.getCustomerName();
+      const res = await fetch('/api/session/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: customerName || undefined,
+          language_to_speak: this.currentLanguage
+        })
+      });
       const data = await res.json();
       this.handleAgentTurn(data.agent_reply, data.state);
     } catch (err) {
@@ -412,10 +429,15 @@ class VoiceAgentStudio {
     this.appendMessage('customer', text);
 
     try {
+      const customerName = this.getCustomerName();
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({
+          message: text,
+          customer_name: customerName || undefined,
+          language_to_speak: this.currentLanguage
+        })
       });
       const data = await res.json();
       this.handleAgentTurn(data.agent_reply, data.state);
@@ -707,7 +729,9 @@ class VoiceAgentStudio {
       this.currentState = resetData.state;
       this.renderStateMatrix(resetData.state);
       window.localStorage.setItem('home-credit-customer-name', customerName);
-      this.customerTargetDisplay.textContent = `Calling: ${customerName} • LAP Offer (₹75L)`;
+      if (this.customerTargetDisplay) {
+        this.customerTargetDisplay.innerHTML = `Calling: <strong>${customerName}</strong> • LAP Offer (₹75L)`;
+      }
       this.studioPromptPreview.textContent = data.rendered_prompt;
       this.nameGate.hidden = true;
       this.nameGate.style.display = 'none';
